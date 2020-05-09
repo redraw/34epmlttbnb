@@ -5,23 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>p l u r i n a c i o n a l</title>
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script src="https://unpkg.com/vue-lazyload/vue-lazyload.js"></script>
   <!-- Primary Meta Tags -->
   <title>ENCUENTRO PLURINACIONAL</title>
   <meta name="title" content="ENCUENTRO PLURINACIONAL">
-  <meta name="description" content="34¬ Encuentro Plurinacional de Mujeres, Lesbianas, Travestis, Trans, Bisexuales y No Binaries">
+  <meta name="description" content="34° Encuentro Plurinacional de Mujeres, Lesbianas, Travestis, Trans, Bisexuales y No Binaries">
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://34epmlttbnb.now.sh/">
   <meta property="og:title" content="ENCUENTRO PLURINACIONAL">
-  <meta property="og:description" content="34¬ Encuentro Plurinacional de Mujeres, Lesbianas, Travestis, Trans, Bisexuales y No Binaries">
+  <meta property="og:description" content="34° Encuentro Plurinacional de Mujeres, Lesbianas, Travestis, Trans, Bisexuales y No Binaries">
   <meta property="og:image" content="https://34epmlttbnb.now.sh/main.png">
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://34epmlttbnb.now.sh/">
   <meta property="twitter:title" content="ENCUENTRO PLURINACIONAL">
-  <meta property="twitter:description" content="34¬ Encuentro Plurinacional de Mujeres, Lesbianas, Travestis, Trans, Bisexuales y No Binaries">
+  <meta property="twitter:description" content="34° Encuentro Plurinacional de Mujeres, Lesbianas, Travestis, Trans, Bisexuales y No Binaries">
   <meta property="twitter:image" content="https://34epmlttbnb.now.sh/main.png">
   <style>
     * {
@@ -30,13 +30,11 @@
     html, body {
       margin: 0;
       padding: 0;
-      width: 100%;
-      height: 100%;
     }
     body {
       font-family: Arial, Helvetica, sans-serif;
-      background-image: linear-gradient(to bottom, #f00000, #ff8000, #ffff00, #007940, #4040ff, #a000c0);
-      background-size: 100% 900vh;
+      background: #f00000;
+      background-image: repeating-linear-gradient(to bottom, #f00000, #ff8000, #ffff00, #007940, #4040ff, #a000c0 50%, #4040ff, #007940, #ffff00, #ff8000);
     }
     h1 {
       position: absolute;
@@ -74,11 +72,20 @@
     @media only screen and (max-width: 600px) {
       img { width: 100%; min-height: 250px; }
     }
+    .typewriter {
+      overflow: hidden; /* Ensures the content is not revealed until the animation */
+      animation: typing 1.5s steps(40, end)
+    }
+    /* The typing effect */
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
   </style>
 </head>
 <body>
   <div id="canvas">
-    <h1>ENCUENTRO PLURINACIONAL <small>#{{ hashtag }}</small></h1>
+    <h1 :class="{'typewriter': loading}">ENCUENTRO PLURINACIONAL <small>#{{ hashtag }}</small></h1>
     <div class="grid">
       <div class="grid-item" v-for="item in items" :key="item.node.id">
         <a :href="`https://instagram.com/p/${item.node.shortcode}`" rel="noopener" target="_blank">
@@ -98,11 +105,13 @@
           'plurinacional'
         ],
         hashtag: '',
-        items: []
+        items: [],
+        loading: false
       },
       mounted () {
         var hash = window.location.hash.substring(1)
         this.hashtag = this.hashtags.includes(hash) ? hash : '34epmlttbnb'
+        this.loading = true
         fetch(`https://34epmlttbnb.now.sh/api/ig?hashtag=${this.hashtag}`).then(response => {
           return response.json()
         }).then(data => {
@@ -110,6 +119,7 @@
             ...data.graphql.hashtag.edge_hashtag_to_media.edges,
             ...data.graphql.hashtag.edge_hashtag_to_top_posts.edges
           ]
+          this.loading = false
         })
       }
     })
